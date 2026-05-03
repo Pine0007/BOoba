@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Breathing</title>
+  <title>Breathwork</title>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -15,11 +15,11 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      color: #2a2a2a;
+      color: #1a1a1a;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding: 20px;
       user-select: none;
       -webkit-user-select: none;
     }
@@ -28,32 +28,46 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 28px;
+      gap: 22px;
       width: 100%;
       max-width: 380px;
     }
 
-    .header {
-      text-align: center;
+    /* Frequency selector */
+    .freq-row {
+      display: flex;
+      gap: 6px;
+      width: 100%;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
-    .title {
-      font-family: 'Instrument Serif', serif;
-      font-style: italic;
-      font-size: 22px;
-      color: #2a2a2a;
-      letter-spacing: -0.4px;
-      margin-bottom: 4px;
-    }
-
-    .subtitle {
+    .freq-btn {
+      font-family: 'Inter', sans-serif;
       font-size: 11px;
-      color: #888;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      font-weight: 400;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      padding: 7px 12px;
+      border-radius: 100px;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      background: transparent;
+      color: #5a5a5a;
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
 
+    .freq-btn:hover {
+      border-color: rgba(0, 0, 0, 0.3);
+      color: #1a1a1a;
+    }
+
+    .freq-btn.active {
+      background: #1a1a1a;
+      color: #fff;
+      border-color: #1a1a1a;
+    }
+
+    /* Breathing circle */
     .breath-area {
       position: relative;
       width: 240px;
@@ -67,9 +81,9 @@
       width: 100px;
       height: 100px;
       border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, rgba(120, 180, 220, 0.4), rgba(80, 140, 200, 0.15));
+      background: radial-gradient(circle at 30% 30%, rgba(120, 180, 220, 0.32), rgba(80, 140, 200, 0.1));
       border: 1px solid rgba(80, 140, 200, 0.25);
-      transition: transform 5s cubic-bezier(0.4, 0, 0.6, 1), background 1s ease;
+      transition: transform 5s cubic-bezier(0.4, 0, 0.6, 1);
       position: absolute;
       transform: scale(1);
     }
@@ -91,95 +105,118 @@
       font-size: 28px;
       color: #1a1a1a;
       letter-spacing: -0.4px;
-      transition: opacity 0.4s ease;
     }
 
     .counter {
-      font-size: 13px;
+      font-size: 11px;
       color: #888;
       margin-top: 6px;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.12em;
       font-variant-numeric: tabular-nums;
+      text-transform: uppercase;
     }
 
+    /* Controls */
     .controls {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       align-items: center;
     }
 
-    button {
+    button.main {
       font-family: 'Inter', sans-serif;
       font-size: 12px;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       font-weight: 500;
-      padding: 10px 22px;
+      padding: 11px 26px;
       border-radius: 100px;
-      border: 1px solid rgba(0, 0, 0, 0.15);
-      background: rgba(255, 255, 255, 0.5);
-      color: #2a2a2a;
+      border: 1px solid #1a1a1a;
+      background: #1a1a1a;
+      color: #fff;
       cursor: pointer;
       transition: all 0.2s ease;
-      backdrop-filter: blur(8px);
     }
 
-    button:hover {
-      background: rgba(0, 0, 0, 0.04);
-      border-color: rgba(0, 0, 0, 0.25);
+    button.main.stop {
+      background: transparent;
+      color: #1a1a1a;
     }
 
-    button.primary {
+    button.main:hover { background: #000; }
+    button.main.stop:hover { background: rgba(0,0,0,0.04); }
+
+    button.icon {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      background: transparent;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    button.icon:hover {
+      border-color: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    button.icon.active {
       background: #1a1a1a;
       color: #fff;
       border-color: #1a1a1a;
     }
 
-    button.primary:hover {
-      background: #000;
-    }
-
-    .icon-btn {
-      width: 36px;
-      height: 36px;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-    }
-
-    .footer {
-      font-size: 10px;
-      color: #aaa;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      text-align: center;
-    }
-
+    /* Dark mode */
     @media (prefers-color-scheme: dark) {
-      body { color: #e0e0e0; }
-      .title { color: #f0f0f0; }
-      .subtitle { color: #888; }
+      body { color: #f0f0f0; }
       .phase { color: #f0f0f0; }
-      .counter { color: #888; }
-      button {
-        background: rgba(255, 255, 255, 0.04);
-        color: #e0e0e0;
-        border-color: rgba(255, 255, 255, 0.15);
+      .freq-btn {
+        border-color: rgba(255,255,255,0.15);
+        color: #aaa;
       }
-      button:hover { background: rgba(255, 255, 255, 0.08); }
-      button.primary {
+      .freq-btn:hover {
+        border-color: rgba(255,255,255,0.4);
+        color: #f0f0f0;
+      }
+      .freq-btn.active {
         background: #f0f0f0;
         color: #1a1a1a;
         border-color: #f0f0f0;
       }
-      button.primary:hover { background: #fff; }
+      button.main {
+        background: #f0f0f0;
+        color: #1a1a1a;
+        border-color: #f0f0f0;
+      }
+      button.main.stop {
+        background: transparent;
+        color: #f0f0f0;
+      }
+      button.main:hover { background: #fff; }
+      button.main.stop:hover { background: rgba(255,255,255,0.06); }
+      button.icon {
+        border-color: rgba(255,255,255,0.15);
+        color: #f0f0f0;
+      }
+      button.icon:hover {
+        border-color: rgba(255,255,255,0.4);
+        background: rgba(255,255,255,0.04);
+      }
+      button.icon.active {
+        background: #f0f0f0;
+        color: #1a1a1a;
+        border-color: #f0f0f0;
+      }
       .breath-circle {
-        background: radial-gradient(circle at 30% 30%, rgba(140, 200, 240, 0.3), rgba(80, 140, 200, 0.1));
+        background: radial-gradient(circle at 30% 30%, rgba(140, 200, 240, 0.28), rgba(80, 140, 200, 0.08));
         border-color: rgba(140, 200, 240, 0.2);
       }
-      .footer { color: #666; }
     }
   </style>
 </head>
@@ -187,31 +224,31 @@
 
   <div class="container">
 
-    <div class="header">
-      <div class="title">Coherent Breathing</div>
-      <div class="subtitle">A52 · 5-5-2 · 6 breaths per minute</div>
+    <div class="freq-row" id="freqRow">
+      <button class="freq-btn active" data-freq="528" title="Miracle Tone — Love & Manifestation">528</button>
+      <button class="freq-btn" data-freq="432" title="Cosmic Alignment — Natural Tuning">432</button>
+      <button class="freq-btn" data-freq="888" title="Abundance Frequency">888</button>
+      <button class="freq-btn" data-freq="963" title="Higher Consciousness — Crown Chakra">963</button>
     </div>
 
     <div class="breath-area">
       <div class="breath-circle" id="circle"></div>
       <div class="breath-text">
-        <div class="phase" id="phase">Ready</div>
-        <div class="counter" id="counter">Press start</div>
+        <div class="phase" id="phase">Begin</div>
+        <div class="counter" id="counter">528 Hz</div>
       </div>
     </div>
 
     <div class="controls">
-      <button class="primary" id="startBtn">Start</button>
-      <button class="icon-btn" id="muteBtn" title="Toggle sound">🔊</button>
-      <button class="icon-btn" id="voiceBtn" title="Toggle voice">💬</button>
+      <button class="main" id="startBtn">Start</button>
+      <button class="icon" id="muteBtn" title="Toggle drone">🔊</button>
+      <button class="icon" id="voiceBtn" title="Toggle voice cues">💬</button>
     </div>
-
-    <div class="footer">5s inhale · 2s hold · 5s exhale</div>
 
   </div>
 
   <script>
-    // ─── A52 Breathing Pattern (evidence-based, 5-5-2) ────────────────────
+    // ─── Breathing pattern: 5s inhale - 2s hold - 5s exhale (heart coherence) ───
     const PHASES = [
       { name: 'Inhale', duration: 5, scale: 'inhale', tone: 'up' },
       { name: 'Hold',   duration: 2, scale: 'hold',   tone: 'hold' },
@@ -224,50 +261,104 @@
     const startBtn  = document.getElementById('startBtn');
     const muteBtn   = document.getElementById('muteBtn');
     const voiceBtn  = document.getElementById('voiceBtn');
+    const freqRow   = document.getElementById('freqRow');
 
     let running = false;
-    let soundOn = true;
+    let droneOn = true;
     let voiceOn = false;
     let timer   = null;
     let countdownTimer = null;
     let audioCtx = null;
     let phaseIdx = 0;
+    let currentFreq = 528;
+    let droneNodes = null;
 
     function getAudio() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       return audioCtx;
     }
 
+    // ─── Frequency drone (manifestation tones) ───
+    function startDrone(hz) {
+      stopDrone();
+      if (!droneOn) return;
+      const ctx = getAudio();
+
+      // Two slightly detuned oscillators for warmth + subtle binaural feel
+      const osc1 = ctx.createOscillator();
+      const osc2 = ctx.createOscillator();
+      const merger = ctx.createChannelMerger(2);
+      const gain1 = ctx.createGain();
+      const gain2 = ctx.createGain();
+      const masterGain = ctx.createGain();
+
+      osc1.type = 'sine';
+      osc2.type = 'sine';
+      osc1.frequency.value = hz;
+      osc2.frequency.value = hz + 4;  // subtle 4Hz binaural difference (alpha range)
+
+      gain1.gain.value = 0;
+      gain2.gain.value = 0;
+      masterGain.gain.value = 0.35;
+
+      // Fade in
+      gain1.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 1.5);
+      gain2.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 1.5);
+
+      osc1.connect(gain1).connect(merger, 0, 0); // left ear
+      osc2.connect(gain2).connect(merger, 0, 1); // right ear
+      merger.connect(masterGain).connect(ctx.destination);
+
+      osc1.start();
+      osc2.start();
+
+      droneNodes = { osc1, osc2, gain1, gain2, masterGain };
+    }
+
+    function stopDrone() {
+      if (!droneNodes) return;
+      const ctx = getAudio();
+      const { osc1, osc2, gain1, gain2 } = droneNodes;
+
+      gain1.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.6);
+      gain2.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.6);
+
+      setTimeout(() => {
+        try { osc1.stop(); osc2.stop(); } catch(e) {}
+      }, 700);
+
+      droneNodes = null;
+    }
+
+    // ─── Phase transition tones (subtle chimes) ───
     function playTone(type) {
-      if (!soundOn) return;
+      if (!droneOn) return;
       const ctx = getAudio();
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = 'sine';
-
       const now = ctx.currentTime;
+
       if (type === 'up') {
-        osc.frequency.setValueAtTime(330, now);
-        osc.frequency.exponentialRampToValueAtTime(523, now + 0.6);
-        gain.gain.setValueAtTime(0, now);
-        gain.gain.linearRampToValueAtTime(0.08, now + 0.05);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
-      } else if (type === 'down') {
-        osc.frequency.setValueAtTime(523, now);
-        osc.frequency.exponentialRampToValueAtTime(330, now + 0.6);
-        gain.gain.setValueAtTime(0, now);
-        gain.gain.linearRampToValueAtTime(0.08, now + 0.05);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
-      } else {
-        // Hold — soft single tone
-        osc.frequency.setValueAtTime(440, now);
+        osc.frequency.setValueAtTime(currentFreq, now);
+        osc.frequency.exponentialRampToValueAtTime(currentFreq * 1.5, now + 0.6);
         gain.gain.setValueAtTime(0, now);
         gain.gain.linearRampToValueAtTime(0.04, now + 0.05);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.7);
+      } else if (type === 'down') {
+        osc.frequency.setValueAtTime(currentFreq * 1.5, now);
+        osc.frequency.exponentialRampToValueAtTime(currentFreq, now + 0.6);
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(0.04, now + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.7);
+      } else {
+        osc.frequency.setValueAtTime(currentFreq * 1.25, now);
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(0.025, now + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.4);
       }
 
-      osc.connect(gain);
-      gain.connect(ctx.destination);
+      osc.connect(gain).connect(ctx.destination);
       osc.start(now);
       osc.stop(now + 0.8);
     }
@@ -278,7 +369,7 @@
       const u = new SpeechSynthesisUtterance(name);
       u.rate   = 0.85;
       u.pitch  = 0.9;
-      u.volume = 0.5;
+      u.volume = 0.45;
       window.speechSynthesis.speak(u);
     }
 
@@ -291,7 +382,6 @@
       playTone(p.tone);
       speakPhase(p.name);
 
-      // Countdown
       let remaining = p.duration;
       counterEl.textContent = remaining + 's';
       clearInterval(countdownTimer);
@@ -311,10 +401,10 @@
       running = true;
       phaseIdx = 0;
       startBtn.textContent = 'Stop';
-      startBtn.classList.remove('primary');
-      // Resume audio context if suspended (mobile autoplay)
-      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-      else getAudio();
+      startBtn.classList.add('stop');
+      const ctx = getAudio();
+      if (ctx.state === 'suspended') ctx.resume();
+      startDrone(currentFreq);
       runPhase();
     }
 
@@ -323,29 +413,40 @@
       clearTimeout(timer);
       clearInterval(countdownTimer);
       circle.className = 'breath-circle';
-      phaseEl.textContent = 'Ready';
-      counterEl.textContent = 'Press start';
+      phaseEl.textContent = 'Begin';
+      counterEl.textContent = currentFreq + ' Hz';
       startBtn.textContent = 'Start';
-      startBtn.classList.add('primary');
+      startBtn.classList.remove('stop');
+      stopDrone();
       if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     }
 
     startBtn.addEventListener('click', () => running ? stop() : start());
 
     muteBtn.addEventListener('click', () => {
-      soundOn = !soundOn;
-      muteBtn.textContent = soundOn ? '🔊' : '🔇';
-      muteBtn.style.opacity = soundOn ? '1' : '0.5';
+      droneOn = !droneOn;
+      muteBtn.textContent = droneOn ? '🔊' : '🔇';
+      if (running) {
+        if (droneOn) startDrone(currentFreq);
+        else stopDrone();
+      }
     });
 
     voiceBtn.addEventListener('click', () => {
       voiceOn = !voiceOn;
-      voiceBtn.style.opacity = voiceOn ? '1' : '0.5';
-      voiceBtn.style.background = voiceOn ? 'rgba(0,0,0,0.08)' : '';
+      voiceBtn.classList.toggle('active', voiceOn);
     });
 
-    // Set initial state
-    voiceBtn.style.opacity = '0.5';
+    // Frequency selector
+    freqRow.querySelectorAll('.freq-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        freqRow.querySelectorAll('.freq-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFreq = parseInt(btn.dataset.freq);
+        if (!running) counterEl.textContent = currentFreq + ' Hz';
+        if (running && droneOn) startDrone(currentFreq);
+      });
+    });
   </script>
 
 </body>

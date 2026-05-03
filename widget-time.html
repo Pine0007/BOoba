@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Time</title>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -15,25 +15,25 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      color: #2a2a2a;
+      color: #1a1a1a;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding: 20px;
     }
 
     .container {
       width: 100%;
-      max-width: 480px;
+      max-width: 460px;
       display: flex;
       flex-direction: column;
-      gap: 28px;
+      gap: 22px;
     }
 
     .row {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
     .row-top {
@@ -45,57 +45,57 @@
     .label {
       font-family: 'Instrument Serif', serif;
       font-style: italic;
-      font-size: 17px;
-      color: #5a5a5a;
-      letter-spacing: -0.2px;
+      font-size: 18px;
+      color: #1a1a1a;
+      letter-spacing: -0.3px;
     }
 
     .value {
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      color: #888;
+      font-family: 'Instrument Serif', serif;
+      font-size: 22px;
       font-weight: 400;
-      letter-spacing: 0.02em;
+      letter-spacing: -0.5px;
       font-variant-numeric: tabular-nums;
     }
 
-    .value strong {
-      color: #1a1a1a;
-      font-weight: 600;
+    .value .total {
+      color: #aaa;
+      font-size: 16px;
+      margin-left: 2px;
     }
 
     .bar {
-      height: 2px;
+      height: 1px;
       background: rgba(0, 0, 0, 0.08);
-      border-radius: 2px;
-      overflow: hidden;
       position: relative;
+      overflow: hidden;
     }
 
     .bar-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
       height: 100%;
       background: #1a1a1a;
-      border-radius: 2px;
-      transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: width 1.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .footer {
       display: flex;
       justify-content: space-between;
-      margin-top: 4px;
-      font-size: 11px;
-      color: #aaa;
-      letter-spacing: 0.04em;
+      margin-top: 6px;
+      font-size: 10px;
+      color: #999;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
       font-weight: 400;
     }
 
     @media (prefers-color-scheme: dark) {
-      body { color: #e0e0e0; }
-      .label { color: #a0a0a0; }
-      .value { color: #888; }
-      .value strong { color: #f0f0f0; }
-      .bar { background: rgba(255, 255, 255, 0.1); }
+      body { color: #f0f0f0; }
+      .label { color: #f0f0f0; }
+      .value .total { color: #555; }
+      .bar { background: rgba(255, 255, 255, 0.08); }
       .bar-fill { background: #f0f0f0; }
       .footer { color: #666; }
     }
@@ -107,16 +107,16 @@
 
     <div class="row">
       <div class="row-top">
-        <span class="label">Week of the year</span>
-        <span class="value"><strong id="weekNum">--</strong> / <span id="weekTotal">52</span></span>
+        <span class="label">Week</span>
+        <span class="value"><span id="weekNum">--</span><span class="total"> / <span id="weekTotal">52</span></span></span>
       </div>
       <div class="bar"><div class="bar-fill" id="weekBar" style="width:0%"></div></div>
     </div>
 
     <div class="row">
       <div class="row-top">
-        <span class="label">Day of the year</span>
-        <span class="value"><strong id="dayNum">--</strong> / <span id="dayTotal">365</span></span>
+        <span class="label">Day</span>
+        <span class="value"><span id="dayNum">--</span><span class="total"> / <span id="dayTotal">365</span></span></span>
       </div>
       <div class="bar"><div class="bar-fill" id="dayBar" style="width:0%"></div></div>
     </div>
@@ -149,20 +149,17 @@
       const now = new Date();
       const year = now.getFullYear();
 
-      // Week
       const week = getISOWeek(now);
       const totalWeeks = getWeeksInYear(year);
       document.getElementById('weekNum').textContent = week;
       document.getElementById('weekTotal').textContent = totalWeeks;
 
-      // Day of year
       const start = new Date(year, 0, 0);
       const dayOfYear = Math.floor((now - start) / 86400000);
       const totalDays = isLeapYear(year) ? 366 : 365;
       document.getElementById('dayNum').textContent = dayOfYear;
       document.getElementById('dayTotal').textContent = totalDays;
 
-      // Bars
       const weekPct = (week / totalWeeks) * 100;
       const dayPct  = (dayOfYear / totalDays) * 100;
       setTimeout(() => {
@@ -170,10 +167,9 @@
         document.getElementById('dayBar').style.width = dayPct + '%';
       }, 80);
 
-      // Footer
-      const opts = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+      const opts = { weekday: 'long', month: 'long', day: 'numeric' };
       document.getElementById('dateLabel').textContent = now.toLocaleDateString('en-US', opts);
-      document.getElementById('pctLabel').textContent = dayPct.toFixed(1) + '% of ' + year;
+      document.getElementById('pctLabel').textContent = dayPct.toFixed(1) + '% — ' + year;
     }
 
     update();
