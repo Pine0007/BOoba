@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Breathwork</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: transparent; height: 100%; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #0f0f0f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+      max-width: 380px;
+    }
+
+    .freq-row {
+      display: flex;
+      gap: 4px;
+      width: 100%;
+      background: rgba(0,0,0,0.04);
+      border-radius: 100px;
+      padding: 4px;
+    }
+
+    .freq-btn {
+      flex: 1;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      padding: 9px 0;
+      border-radius: 100px;
+      border: none;
+      background: transparent;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .freq-btn:hover { color: #0f0f0f; }
+    .freq-btn.active { background: #0f0f0f; color: #fff; }
+
+    .breath-area {
+      position: relative;
+      width: 240px;
+      height: 240px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .breath-circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(140,190,230,0.32), rgba(80,140,200,0.08));
+      border: 1px solid rgba(80,140,200,0.2);
+      transition: transform 5s cubic-bezier(0.4, 0, 0.6, 1);
+      position: absolute;
+      transform: scale(1);
+    }
+    .breath-circle.inhale { transform: scale(2.0); transition-duration: 5s; }
+    .breath-circle.hold   { transform: scale(2.0); transition-duration: 2s; }
+    .breath-circle.exhale { transform: scale(1.0); transition-duration: 5s; }
+
+    .breath-text {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .phase {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 30px;
+      font-weight: 400;
+      color: #0f0f0f;
+      letter-spacing: -0.5px;
+    }
+
+    .intention {
+      font-size: 10px;
+      color: #888;
+      margin-top: 6px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    button.main {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-weight: 500;
+      padding: 12px 32px;
+      border-radius: 100px;
+      border: 1px solid #0f0f0f;
+      background: #0f0f0f;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    button.main.stop { background: transparent; color: #0f0f0f; }
+    button.main:hover { transform: translateY(-1px); }
+
+    button.icon {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.1);
+      background: transparent;
+      cursor: pointer;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      color: #666;
+    }
+    button.icon:hover { border-color: rgba(0,0,0,0.25); color: #0f0f0f; }
+    button.icon.active { background: #0f0f0f; color: #fff; border-color: #0f0f0f; }
+
+    @media (prefers-color-scheme: dark) {
+      body { color: #f5f5f5; }
+      .phase { color: #f5f5f5; }
+      .freq-row { background: rgba(255,255,255,0.06); }
+      .freq-btn { color: #999; }
+      .freq-btn:hover { color: #f5f5f5; }
+      .freq-btn.active { background: #f5f5f5; color: #0f0f0f; }
+      button.main { background: #f5f5f5; color: #0f0f0f; border-color: #f5f5f5; }
+      button.main.stop { background: transparent; color: #f5f5f5; }
+      button.icon { border-color: rgba(255,255,255,0.12); color: #999; }
+      button.icon:hover { border-color: rgba(255,255,255,0.3); color: #f5f5f5; }
+      button.icon.active { background: #f5f5f5; color: #0f0f0f; border-color: #f5f5f5; }
+      .breath-circle {
+        background: radial-gradient(circle at 30% 30%, rgba(140,200,240,0.28), rgba(80,140,200,0.06));
+        border-color: rgba(140,200,240,0.18);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="freq-row" id="freqRow">
+      <button class="freq-btn active" data-freq="528">528</button>
+      <button class="freq-btn" data-freq="432">432</button>
+      <button class="freq-btn" data-freq="888">888</button>
+      <button class="freq-btn" data-freq="963">963</button>
+    </div>
+
+    <div class="breath-area">
+      <div class="breath-circle" id="circle"></div>
+      <div class="breath-text">
+        <div class="phase" id="phase">Begin</div>
+        <div class="intention" id="intention">Manifestation</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="main" id="startBtn">Start</button>
+      <button class="icon active" id="soundBtn">♪</button>
+      <button class="icon active" id="chimeBtn">🔔</button>
+    </div>
+  </div>
+
+  <script>
+    const FREQ_DATA = {
+      528: { hz: 528, intention: 'Manifestation'    },
+      432: { hz: 432, intention: 'Cosmic Alignment' },
+      888: { hz: 888, intention: 'Abundance'        },
+      963: { hz: 963, intention: 'Higher State'     }
+    };
+
+    const PHASES = [
+      { name: 'Inhale', duration: 5, scale: 'inhale', note: 220.00 },  // A3 — low, warm
+      { name: 'Hold',   duration: 2, scale: 'hold',   note: 261.63 },  // C4 — middle
+      { name: 'Exhale', duration: 5, scale: 'exhale', note: 196.00 },  // G3 — low, releasing
+    ];
+
+    const circle      = document.getElementById('circle');
+    const phaseEl     = document.getElementById('phase');
+    const intentionEl = document.getElementById('intention');
+    const startBtn    = document.getElementById('startBtn');
+    const soundBtn    = document.getElementById('soundBtn');
+    const chimeBtn    = document.getElementById('chimeBtn');
+    const freqRow     = document.getElementById('freqRow');
+
+    let running  = false;
+    let soundOn  = true;
+    let chimesOn = true;
+    let timer    = null;
+    let phaseIdx = 0;
+    let currentFreq = 528;
+    let ctx = null;
+    let droneNodes = null;
+
+    function getCtx() {
+      if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if (ctx.state === 'suspended') ctx.resume();
+      return ctx;
+    }
+
+    // ─── Reverb ───────────────────────────────────────────────────────────
+    function makeReverb(c, duration = 3.5, decay = 2.8) {
+      const rate = c.sampleRate;
+      const len  = rate * duration;
+      const buf  = c.createBuffer(2, len, rate);
+      for (let ch = 0; ch < 2; ch++) {
+        const d = buf.getChannelData(ch);
+        for (let i = 0; i < len; i++) {
+          d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, decay);
+        }
+      }
+      const node = c.createConvolver();
+      node.buffer = buf;
+      return node;
+    }
+
+    // ─── Low-pass filter — removes all harsh high-frequency content ───────
+    function makeLowPass(c, freq = 600) {
+      const f = c.createBiquadFilter();
+      f.type = 'lowpass';
+      f.frequency.value = freq;
+      f.Q.value = 0.5;  // gentle rolloff, not resonant
+      return f;
+    }
+
+    // ─── Drone — pure warm tones only, heavily filtered ───────────────────
+    function startDrone(hz) {
+      stopDrone();
+      if (!soundOn) return;
+      const c   = getCtx();
+      const now = c.currentTime;
+
+      const reverb  = makeReverb(c, 3.5, 2.8);
+      const lpf     = makeLowPass(c, Math.min(hz * 2.2, 900)); // cut above 2nd harmonic
+      const master  = c.createGain();
+
+      // Signal chain: oscs → lpf → reverb → master → out
+      lpf.connect(reverb);
+      reverb.connect(master);
+      master.connect(c.destination);
+      master.gain.setValueAtTime(0, now);
+      master.gain.linearRampToValueAtTime(0.42, now + 4.0); // very slow fade in
+
+      // Only 3 layers — root, sub-octave, soft 5th
+      // No high harmonics at all
+      const layers = [
+        { f: hz,       vol: 0.14 },  // root solfeggio tone
+        { f: hz * 0.5, vol: 0.12 },  // sub octave — warm, grounding
+        { f: hz * 1.5, vol: 0.04 },  // soft 5th — just a hint of warmth
+      ];
+
+      const oscs = layers.map(({ f, vol }) => {
+        const osc  = c.createOscillator();
+        const gain = c.createGain();
+
+        osc.type = 'sine'; // pure sine — smoothest possible waveform
+        osc.frequency.setValueAtTime(f, now);
+
+        // Very slow drift (0.08 Hz) — gives it a living, breathing quality
+        const lfo  = c.createOscillator();
+        const lfoG = c.createGain();
+        lfo.frequency.value = 0.08;
+        lfoG.gain.value = f * 0.002; // barely perceptible
+        lfo.connect(lfoG);
+        lfoG.connect(osc.frequency);
+        lfo.start(now);
+
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(vol, now + 4.0);
+        osc.connect(gain);
+        gain.connect(lpf);
+        osc.start(now);
+
+        return { osc, gain, lfo };
+      });
+
+      droneNodes = { oscs, master };
+    }
+
+    function stopDrone() {
+      if (!droneNodes) return;
+      const c = getCtx();
+      const { oscs, master } = droneNodes;
+      master.gain.linearRampToValueAtTime(0, c.currentTime + 1.5);
+      setTimeout(() => {
+        oscs.forEach(({ osc, lfo }) => {
+          try { osc.stop(); } catch(e) {}
+          try { lfo.stop(); } catch(e) {}
+        });
+      }, 1600);
+      droneNodes = null;
+    }
+
+    // ─── Chimes — low register, very soft, long decay ─────────────────────
+    function playChime(note) {
+      if (!chimesOn) return;
+      const c   = getCtx();
+      const now = c.currentTime;
+
+      const reverb = makeReverb(c, 2.5, 2.2);
+      const lpf    = makeLowPass(c, 500); // very soft — cuts all brightness
+      const out    = c.createGain();
+
+      lpf.connect(reverb);
+      reverb.connect(out);
+      out.connect(c.destination);
+      out.gain.value = 0.5;
+
+      // Two harmonic partials — root and soft octave only
+      [note, note * 2].forEach((f, i) => {
+        const osc  = c.createOscillator();
+        const gain = c.createGain();
+        const vol  = i === 0 ? 0.035 : 0.010;
+
+        osc.type = 'sine';
+        osc.frequency.value = f;
+
+        // Very slow attack — no click at all
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(vol, now + 0.08); // 80ms attack — no click
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 3.0); // long gentle decay
+
+        osc.connect(gain);
+        gain.connect(lpf);
+        osc.start(now);
+        osc.stop(now + 3.2);
+      });
+    }
+
+    // ─── Breathing loop ───────────────────────────────────────────────────
+    function runPhase() {
+      if (!running) return;
+      const p = PHASES[phaseIdx];
+      circle.className = 'breath-circle ' + p.scale;
+      phaseEl.textContent = p.name;
+      playChime(p.note);
+
+      timer = setTimeout(() => {
+        phaseIdx = (phaseIdx + 1) % PHASES.length;
+        runPhase();
+      }, p.duration * 1000);
+    }
+
+    function start() {
+      running  = true;
+      phaseIdx = 0;
+      startBtn.textContent = 'Stop';
+      startBtn.classList.add('stop');
+      startDrone(FREQ_DATA[currentFreq].hz);
+      runPhase();
+    }
+
+    function stop() {
+      running = false;
+      clearTimeout(timer);
+      circle.className  = 'breath-circle';
+      phaseEl.textContent = 'Begin';
+      startBtn.textContent = 'Start';
+      startBtn.classList.remove('stop');
+      stopDrone();
+    }
+
+    startBtn.addEventListener('click', () => running ? stop() : start());
+
+    soundBtn.addEventListener('click', () => {
+      soundOn = !soundOn;
+      soundBtn.classList.toggle('active', soundOn);
+      if (running) {
+        if (soundOn) startDrone(FREQ_DATA[currentFreq].hz);
+        else stopDrone();
+      }
+    });
+
+    chimeBtn.addEventListener('click', () => {
+      chimesOn = !chimesOn;
+      chimeBtn.classList.toggle('active', chimesOn);
+    });
+
+    freqRow.querySelectorAll('.freq-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        freqRow.querySelectorAll('.freq-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFreq = parseInt(btn.dataset.freq);
+        intentionEl.textContent = FREQ_DATA[currentFreq].intention;
+        if (running) startDrone(FREQ_DATA[currentFreq].hz);
+      });
+    });
+  </script>
+
+</body>
+</html>
