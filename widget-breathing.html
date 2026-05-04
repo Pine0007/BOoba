@@ -4,14 +4,13 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Breathwork</title>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { background: transparent; height: 100%; }
 
     body {
       font-family: 'Inter', sans-serif;
-      color: #0f0f0f;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -24,60 +23,133 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 20px;
+      gap: 22px;
       width: 100%;
-      max-width: 380px;
+      max-width: 360px;
     }
 
-    .freq-row {
+    /* ── Mode selector ── */
+    .mode-row {
       display: flex;
       gap: 4px;
       width: 100%;
-      background: rgba(0,0,0,0.04);
+      background: rgba(180, 140, 60, 0.07);
       border-radius: 100px;
       padding: 4px;
+      border: 1px solid rgba(180, 140, 60, 0.14);
     }
 
-    .freq-btn {
+    .mode-btn {
       flex: 1;
       font-family: 'Inter', sans-serif;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 500;
-      letter-spacing: 0.04em;
-      padding: 9px 0;
+      letter-spacing: 0.07em;
+      padding: 8px 0;
       border-radius: 100px;
       border: none;
       background: transparent;
-      color: #666;
+      color: rgba(130, 95, 25, 0.5);
       cursor: pointer;
-      transition: all 0.25s ease;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
     }
-    .freq-btn:hover { color: #0f0f0f; }
-    .freq-btn.active { background: #0f0f0f; color: #fff; }
 
+    .mode-btn:hover { color: rgba(150, 110, 30, 0.85); }
+
+    .mode-btn.active {
+      background: linear-gradient(135deg, #c9a84c, #e0bf62);
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(195, 155, 55, 0.3);
+    }
+
+    /* ── Breathing area ── */
     .breath-area {
       position: relative;
-      width: 240px;
-      height: 240px;
+      width: 260px;
+      height: 260px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .breath-circle {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, rgba(140,190,230,0.32), rgba(80,140,200,0.08));
-      border: 1px solid rgba(80,140,200,0.2);
-      transition: transform 5s cubic-bezier(0.4, 0, 0.6, 1);
+    /* Outer rotating ring */
+    .glow-ring {
       position: absolute;
-      transform: scale(1);
+      width: 205px;
+      height: 205px;
+      border-radius: 50%;
+      border: 1px solid rgba(200, 165, 75, 0.14);
+      animation: rotateRing 24s linear infinite;
+      pointer-events: none;
     }
-    .breath-circle.inhale { transform: scale(2.0); transition-duration: 5s; }
-    .breath-circle.hold   { transform: scale(2.0); transition-duration: 2s; }
-    .breath-circle.exhale { transform: scale(1.0); transition-duration: 5s; }
 
+    @keyframes rotateRing {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /* Main breath orb */
+    .breath-circle {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      position: absolute;
+      transition: transform 5s cubic-bezier(0.4, 0, 0.6, 1),
+                  box-shadow 5s cubic-bezier(0.4, 0, 0.6, 1),
+                  background 2s ease;
+      transform: scale(1);
+      background: radial-gradient(circle at 35% 35%,
+        rgba(255, 218, 110, 0.50),
+        rgba(198, 155, 55, 0.22),
+        rgba(155, 105, 22, 0.07));
+      box-shadow:
+        0 0 18px rgba(215, 172, 68, 0.18),
+        0 0 52px rgba(215, 172, 68, 0.05),
+        inset 0 0 18px rgba(255, 228, 130, 0.13);
+      border: 1px solid rgba(215, 175, 72, 0.28);
+    }
+
+    .breath-circle.inhale {
+      transform: scale(2.1);
+      background: radial-gradient(circle at 35% 35%,
+        rgba(255, 232, 142, 0.62),
+        rgba(218, 172, 65, 0.32),
+        rgba(175, 125, 35, 0.11));
+      box-shadow:
+        0 0 38px rgba(228, 185, 82, 0.38),
+        0 0 95px rgba(228, 185, 82, 0.10),
+        inset 0 0 28px rgba(255, 238, 155, 0.18);
+      transition-duration: 5s;
+    }
+
+    .breath-circle.hold {
+      transform: scale(2.1);
+      background: radial-gradient(circle at 35% 35%,
+        rgba(255, 240, 162, 0.68),
+        rgba(222, 178, 72, 0.38),
+        rgba(180, 132, 42, 0.14));
+      box-shadow:
+        0 0 50px rgba(232, 192, 90, 0.48),
+        0 0 115px rgba(232, 192, 90, 0.13),
+        inset 0 0 38px rgba(255, 245, 175, 0.22);
+      transition-duration: 2s;
+    }
+
+    .breath-circle.exhale {
+      transform: scale(1);
+      background: radial-gradient(circle at 35% 35%,
+        rgba(255, 215, 105, 0.42),
+        rgba(195, 152, 50, 0.18),
+        rgba(150, 100, 20, 0.05));
+      box-shadow:
+        0 0 12px rgba(210, 168, 62, 0.12),
+        0 0 35px rgba(210, 168, 62, 0.03),
+        inset 0 0 12px rgba(255, 220, 120, 0.08);
+      transition-duration: 5s;
+    }
+
+    /* Text */
     .breath-text {
       position: relative;
       z-index: 2;
@@ -86,136 +158,189 @@
     }
 
     .phase {
-      font-family: 'Fraunces', serif;
+      font-family: 'Cormorant Garamond', serif;
       font-style: italic;
-      font-size: 30px;
-      font-weight: 400;
-      color: #0f0f0f;
-      letter-spacing: -0.5px;
+      font-size: 27px;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+      color: #7a5818;
     }
 
-    .intention {
-      font-size: 10px;
-      color: #888;
-      margin-top: 6px;
-      letter-spacing: 0.16em;
+    .sublabel {
+      font-size: 9px;
+      color: rgba(135, 98, 28, 0.52);
+      margin-top: 5px;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
-      font-weight: 500;
+      font-weight: 400;
     }
 
+    /* headphones notice */
+    .headphones {
+      font-size: 9px;
+      color: rgba(135, 98, 28, 0.38);
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      text-align: center;
+      font-weight: 400;
+    }
+
+    /* ── Controls ── */
     .controls {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       align-items: center;
     }
 
     button.main {
-      font-family: 'Inter', sans-serif;
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      font-weight: 500;
-      padding: 12px 32px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
+      font-style: italic;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      padding: 11px 34px;
       border-radius: 100px;
-      border: 1px solid #0f0f0f;
-      background: #0f0f0f;
-      color: #fff;
+      border: 1px solid rgba(185, 142, 50, 0.45);
+      background: linear-gradient(135deg, rgba(195, 155, 55, 0.10), rgba(218, 175, 72, 0.05));
+      color: #7a5818;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
     }
-    button.main.stop { background: transparent; color: #0f0f0f; }
-    button.main:hover { transform: translateY(-1px); }
+
+    button.main:hover {
+      background: linear-gradient(135deg, rgba(195, 155, 55, 0.18), rgba(218, 175, 72, 0.10));
+      box-shadow: 0 0 18px rgba(195, 155, 55, 0.13);
+    }
+
+    button.main.stop {
+      background: transparent;
+      color: rgba(135, 98, 28, 0.42);
+      border-color: rgba(185, 142, 50, 0.22);
+    }
 
     button.icon {
-      width: 36px;
-      height: 36px;
+      width: 34px;
+      height: 34px;
       padding: 0;
       border-radius: 50%;
-      border: 1px solid rgba(0,0,0,0.1);
+      border: 1px solid rgba(185, 142, 50, 0.22);
       background: transparent;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: all 0.2s ease;
-      color: #666;
+      color: rgba(135, 98, 28, 0.45);
     }
-    button.icon:hover { border-color: rgba(0,0,0,0.25); color: #0f0f0f; }
-    button.icon.active { background: #0f0f0f; color: #fff; border-color: #0f0f0f; }
+
+    button.icon:hover { border-color: rgba(185, 142, 50, 0.48); color: #7a5818; }
+
+    button.icon.active {
+      background: linear-gradient(135deg, rgba(195, 155, 55, 0.18), rgba(218, 175, 72, 0.08));
+      border-color: rgba(185, 142, 50, 0.48);
+      color: #7a5818;
+    }
 
     @media (prefers-color-scheme: dark) {
-      body { color: #f5f5f5; }
-      .phase { color: #f5f5f5; }
-      .freq-row { background: rgba(255,255,255,0.06); }
-      .freq-btn { color: #999; }
-      .freq-btn:hover { color: #f5f5f5; }
-      .freq-btn.active { background: #f5f5f5; color: #0f0f0f; }
-      button.main { background: #f5f5f5; color: #0f0f0f; border-color: #f5f5f5; }
-      button.main.stop { background: transparent; color: #f5f5f5; }
-      button.icon { border-color: rgba(255,255,255,0.12); color: #999; }
-      button.icon:hover { border-color: rgba(255,255,255,0.3); color: #f5f5f5; }
-      button.icon.active { background: #f5f5f5; color: #0f0f0f; border-color: #f5f5f5; }
-      .breath-circle {
-        background: radial-gradient(circle at 30% 30%, rgba(140,200,240,0.28), rgba(80,140,200,0.06));
-        border-color: rgba(140,200,240,0.18);
-      }
+      .phase { color: #d4aa55; }
+      .sublabel { color: rgba(200, 162, 72, 0.48); }
+      .headphones { color: rgba(200, 162, 72, 0.32); }
+      .mode-btn { color: rgba(200, 162, 72, 0.42); }
+      .mode-btn:hover { color: rgba(200, 162, 72, 0.78); }
+      button.main { color: #d4aa55; border-color: rgba(200, 162, 72, 0.38); }
+      button.main.stop { color: rgba(200, 162, 72, 0.35); }
+      button.icon { color: rgba(200, 162, 72, 0.38); border-color: rgba(200, 162, 72, 0.18); }
+      button.icon:hover { color: #d4aa55; border-color: rgba(200, 162, 72, 0.5); }
+      button.icon.active { color: #d4aa55; border-color: rgba(200, 162, 72, 0.5); }
     }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <div class="freq-row" id="freqRow">
-      <button class="freq-btn active" data-freq="528">528</button>
-      <button class="freq-btn" data-freq="432">432</button>
-      <button class="freq-btn" data-freq="888">888</button>
-      <button class="freq-btn" data-freq="963">963</button>
+
+    <!-- Mode selector: Theta visualization vs Solfeggio -->
+    <div class="mode-row" id="modeRow">
+      <button class="mode-btn active" data-mode="theta">Theta 6Hz</button>
+      <button class="mode-btn" data-mode="528">528 Hz</button>
+      <button class="mode-btn" data-mode="432">432 Hz</button>
+      <button class="mode-btn" data-mode="963">963 Hz</button>
     </div>
 
+    <!-- Breathing circle -->
     <div class="breath-area">
+      <div class="glow-ring"></div>
       <div class="breath-circle" id="circle"></div>
       <div class="breath-text">
         <div class="phase" id="phase">Begin</div>
-        <div class="intention" id="intention">Manifestation</div>
+        <div class="sublabel" id="sublabel">Visualization</div>
       </div>
     </div>
 
+    <!-- Controls -->
     <div class="controls">
-      <button class="main" id="startBtn">Start</button>
+      <button class="main" id="startBtn">Begin</button>
       <button class="icon active" id="soundBtn">♪</button>
-      <button class="icon active" id="chimeBtn">🔔</button>
+      <button class="icon active" id="chimeBtn">✦</button>
     </div>
+
+    <div class="headphones" id="headphonesNote">🎧 use headphones for full effect</div>
+
   </div>
 
   <script>
-    const FREQ_DATA = {
-      528: { hz: 528, intention: 'Manifestation'    },
-      432: { hz: 432, intention: 'Cosmic Alignment' },
-      888: { hz: 888, intention: 'Abundance'        },
-      963: { hz: 963, intention: 'Higher State'     }
+    // ─── Mode definitions ─────────────────────────────────────────────────
+    // Theta: true binaural beat — left ear 250Hz, right ear 256Hz = 6Hz beat
+    // Solfeggio: pure carrier drone at the frequency
+    const MODES = {
+      theta: {
+        leftHz:    250,
+        rightHz:   256,   // 256-250 = 6Hz theta beat — visualization/flow state
+        sublabel:  'Visualization · Flow State',
+        chimeNote: 250
+      },
+      528: {
+        leftHz:    528,
+        rightHz:   534,   // 6Hz beat on 528 carrier
+        sublabel:  'I Am Love · Manifestation',
+        chimeNote: 264
+      },
+      432: {
+        leftHz:    432,
+        rightHz:   438,   // 6Hz beat on 432 carrier
+        sublabel:  'I Am Aligned · Cosmic',
+        chimeNote: 216
+      },
+      963: {
+        leftHz:    963,
+        rightHz:   969,   // 6Hz beat on 963 carrier
+        sublabel:  'I Am Infinite · Crown',
+        chimeNote: 321
+      }
     };
 
+    // 4-7-8 pattern: inhale to receive, long hold to visualize vividly, exhale to release resistance
     const PHASES = [
-      { name: 'Inhale', duration: 5, scale: 'inhale', note: 220.00 },  // A3 — low, warm
-      { name: 'Hold',   duration: 2, scale: 'hold',   note: 261.63 },  // C4 — middle
-      { name: 'Exhale', duration: 5, scale: 'exhale', note: 196.00 },  // G3 — low, releasing
+      { name: 'Receive',   duration: 4, scale: 'inhale' },
+      { name: 'Visualize', duration: 7, scale: 'hold'   },
+      { name: 'Release',   duration: 8, scale: 'exhale' },
     ];
 
-    const circle      = document.getElementById('circle');
-    const phaseEl     = document.getElementById('phase');
-    const intentionEl = document.getElementById('intention');
-    const startBtn    = document.getElementById('startBtn');
-    const soundBtn    = document.getElementById('soundBtn');
-    const chimeBtn    = document.getElementById('chimeBtn');
-    const freqRow     = document.getElementById('freqRow');
+    const circle    = document.getElementById('circle');
+    const phaseEl   = document.getElementById('phase');
+    const sublabelEl = document.getElementById('sublabel');
+    const startBtn  = document.getElementById('startBtn');
+    const soundBtn  = document.getElementById('soundBtn');
+    const chimeBtn  = document.getElementById('chimeBtn');
+    const modeRow   = document.getElementById('modeRow');
 
-    let running  = false;
-    let soundOn  = true;
-    let chimesOn = true;
-    let timer    = null;
-    let phaseIdx = 0;
-    let currentFreq = 528;
+    let running   = false;
+    let soundOn   = true;
+    let chimesOn  = true;
+    let timer     = null;
+    let phaseIdx  = 0;
+    let currentMode = 'theta';
     let ctx = null;
     let droneNodes = null;
 
@@ -226,7 +351,7 @@
     }
 
     // ─── Reverb ───────────────────────────────────────────────────────────
-    function makeReverb(c, duration = 3.5, decay = 2.8) {
+    function makeReverb(c, duration = 5.0, decay = 3.5) {
       const rate = c.sampleRate;
       const len  = rate * duration;
       const buf  = c.createBuffer(2, len, rate);
@@ -241,117 +366,132 @@
       return node;
     }
 
-    // ─── Low-pass filter — removes all harsh high-frequency content ───────
-    function makeLowPass(c, freq = 600) {
-      const f = c.createBiquadFilter();
-      f.type = 'lowpass';
-      f.frequency.value = freq;
-      f.Q.value = 0.5;  // gentle rolloff, not resonant
-      return f;
-    }
-
-    // ─── Drone — pure warm tones only, heavily filtered ───────────────────
-    function startDrone(hz) {
+    // ─── True binaural beat drone ─────────────────────────────────────────
+    // Left and right channels carry different frequencies
+    // Brain perceives the DIFFERENCE as a low-frequency beat (theta = 6Hz)
+    // This is the scientifically validated mechanism — NOT just two tones
+    function startDrone(mode) {
       stopDrone();
       if (!soundOn) return;
       const c   = getCtx();
       const now = c.currentTime;
+      const m   = MODES[mode];
 
-      const reverb  = makeReverb(c, 3.5, 2.8);
-      const lpf     = makeLowPass(c, Math.min(hz * 2.2, 900)); // cut above 2nd harmonic
+      // Create stereo channel merger — critical for true binaural effect
+      const merger  = c.createChannelMerger(2);
+      const reverb  = makeReverb(c, 5.0, 3.5);
       const master  = c.createGain();
 
-      // Signal chain: oscs → lpf → reverb → master → out
-      lpf.connect(reverb);
+      merger.connect(reverb);
       reverb.connect(master);
       master.connect(c.destination);
+
       master.gain.setValueAtTime(0, now);
-      master.gain.linearRampToValueAtTime(0.42, now + 4.0); // very slow fade in
+      master.gain.linearRampToValueAtTime(0.30, now + 6.0); // very slow golden fade
 
-      // Only 3 layers — root, sub-octave, soft 5th
-      // No high harmonics at all
-      const layers = [
-        { f: hz,       vol: 0.14 },  // root solfeggio tone
-        { f: hz * 0.5, vol: 0.12 },  // sub octave — warm, grounding
-        { f: hz * 1.5, vol: 0.04 },  // soft 5th — just a hint of warmth
-      ];
+      // ── LEFT EAR ──────────────────────────────────────────────────────
+      const oscL   = c.createOscillator();
+      const gainL  = c.createGain();
+      const splitterL = c.createChannelSplitter(1);
+      oscL.type = 'sine';
+      oscL.frequency.setValueAtTime(m.leftHz, now);
+      gainL.gain.setValueAtTime(0, now);
+      gainL.gain.linearRampToValueAtTime(0.5, now + 6.0);
+      oscL.connect(gainL);
+      gainL.connect(merger, 0, 0); // left channel only
 
-      const oscs = layers.map(({ f, vol }) => {
-        const osc  = c.createOscillator();
-        const gain = c.createGain();
+      // ── RIGHT EAR ─────────────────────────────────────────────────────
+      const oscR  = c.createOscillator();
+      const gainR = c.createGain();
+      oscR.type = 'sine';
+      oscR.frequency.setValueAtTime(m.rightHz, now);
+      gainR.gain.setValueAtTime(0, now);
+      gainR.gain.linearRampToValueAtTime(0.5, now + 6.0);
+      oscR.connect(gainR);
+      gainR.connect(merger, 0, 1); // right channel only
 
-        osc.type = 'sine'; // pure sine — smoothest possible waveform
-        osc.frequency.setValueAtTime(f, now);
+      // ── Sub-harmonic warmth (mono, both ears) ─────────────────────────
+      // Adds gentle body resonance without disturbing the binaural beat
+      const oscSub  = c.createOscillator();
+      const gainSub = c.createGain();
+      const lpfSub  = c.createBiquadFilter();
+      lpfSub.type = 'lowpass';
+      lpfSub.frequency.value = 300;
+      lpfSub.Q.value = 0.4;
+      oscSub.type = 'sine';
+      oscSub.frequency.value = m.leftHz * 0.5;
+      gainSub.gain.setValueAtTime(0, now);
+      gainSub.gain.linearRampToValueAtTime(0.08, now + 6.0);
+      oscSub.connect(gainSub);
+      gainSub.connect(lpfSub);
+      lpfSub.connect(merger, 0, 0);
+      lpfSub.connect(merger, 0, 1);
 
-        // Very slow drift (0.08 Hz) — gives it a living, breathing quality
-        const lfo  = c.createOscillator();
-        const lfoG = c.createGain();
-        lfo.frequency.value = 0.08;
-        lfoG.gain.value = f * 0.002; // barely perceptible
-        lfo.connect(lfoG);
-        lfoG.connect(osc.frequency);
-        lfo.start(now);
+      oscL.start(now);
+      oscR.start(now);
+      oscSub.start(now);
 
-        gain.gain.setValueAtTime(0, now);
-        gain.gain.linearRampToValueAtTime(vol, now + 4.0);
-        osc.connect(gain);
-        gain.connect(lpf);
-        osc.start(now);
-
-        return { osc, gain, lfo };
-      });
-
-      droneNodes = { oscs, master };
+      droneNodes = { oscs: [oscL, oscR, oscSub], master };
     }
 
     function stopDrone() {
       if (!droneNodes) return;
       const c = getCtx();
       const { oscs, master } = droneNodes;
-      master.gain.linearRampToValueAtTime(0, c.currentTime + 1.5);
+      master.gain.linearRampToValueAtTime(0, c.currentTime + 2.0);
       setTimeout(() => {
-        oscs.forEach(({ osc, lfo }) => {
-          try { osc.stop(); } catch(e) {}
-          try { lfo.stop(); } catch(e) {}
-        });
-      }, 1600);
+        oscs.forEach(o => { try { o.stop(); } catch(e) {} });
+      }, 2200);
       droneNodes = null;
     }
 
-    // ─── Chimes — low register, very soft, long decay ─────────────────────
-    function playChime(note) {
+    // ─── Phase chime — deep warm bowl, soft but present ───────────────
+    function playChime() {
       if (!chimesOn) return;
       const c   = getCtx();
       const now = c.currentTime;
 
-      const reverb = makeReverb(c, 2.5, 2.2);
-      const lpf    = makeLowPass(c, 500); // very soft — cuts all brightness
-      const out    = c.createGain();
+      // 174Hz — deep, warm, grounding. Lowest solfeggio tone.
+      // Sits below the binaural carrier so it doesn’t clash or feel sharp
+      const note = 174;
+
+      const reverb = makeReverb(c, 4.0, 2.8);
+      const lpf    = c.createBiquadFilter();
+      lpf.type = 'lowpass';
+      lpf.frequency.value = 520; // cut everything sharp above this
+      lpf.Q.value = 0.3;
+      const out = c.createGain();
+      out.gain.value = 0.9; // strong enough to hear, not jarring
 
       lpf.connect(reverb);
       reverb.connect(out);
       out.connect(c.destination);
-      out.gain.value = 0.5;
 
-      // Two harmonic partials — root and soft octave only
-      [note, note * 2].forEach((f, i) => {
-        const osc  = c.createOscillator();
-        const gain = c.createGain();
-        const vol  = i === 0 ? 0.035 : 0.010;
+      // Root — deep and warm
+      const osc1  = c.createOscillator();
+      const gain1 = c.createGain();
+      osc1.type = 'sine';
+      osc1.frequency.value = note;
+      gain1.gain.setValueAtTime(0, now);
+      gain1.gain.linearRampToValueAtTime(0.10, now + 0.18); // slow gentle attack
+      gain1.gain.exponentialRampToValueAtTime(0.0001, now + 3.5);
+      osc1.connect(gain1);
+      gain1.connect(lpf);
+      osc1.start(now);
+      osc1.stop(now + 4.0);
 
-        osc.type = 'sine';
-        osc.frequency.value = f;
-
-        // Very slow attack — no click at all
-        gain.gain.setValueAtTime(0, now);
-        gain.gain.linearRampToValueAtTime(vol, now + 0.08); // 80ms attack — no click
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 3.0); // long gentle decay
-
-        osc.connect(gain);
-        gain.connect(lpf);
-        osc.start(now);
-        osc.stop(now + 3.2);
-      });
+      // Soft octave — adds body without brightness
+      const osc2  = c.createOscillator();
+      const gain2 = c.createGain();
+      osc2.type = 'sine';
+      osc2.frequency.value = note * 2;
+      gain2.gain.setValueAtTime(0, now);
+      gain2.gain.linearRampToValueAtTime(0.035, now + 0.18);
+      gain2.gain.exponentialRampToValueAtTime(0.0001, now + 2.8);
+      osc2.connect(gain2);
+      gain2.connect(lpf);
+      osc2.start(now);
+      osc2.stop(now + 3.0);
     }
 
     // ─── Breathing loop ───────────────────────────────────────────────────
@@ -360,7 +500,7 @@
       const p = PHASES[phaseIdx];
       circle.className = 'breath-circle ' + p.scale;
       phaseEl.textContent = p.name;
-      playChime(p.note);
+      playChime();
 
       timer = setTimeout(() => {
         phaseIdx = (phaseIdx + 1) % PHASES.length;
@@ -371,18 +511,18 @@
     function start() {
       running  = true;
       phaseIdx = 0;
-      startBtn.textContent = 'Stop';
+      startBtn.textContent = 'Pause';
       startBtn.classList.add('stop');
-      startDrone(FREQ_DATA[currentFreq].hz);
+      startDrone(currentMode);
       runPhase();
     }
 
     function stop() {
       running = false;
       clearTimeout(timer);
-      circle.className  = 'breath-circle';
-      phaseEl.textContent = 'Begin';
-      startBtn.textContent = 'Start';
+      circle.className     = 'breath-circle';
+      phaseEl.textContent  = 'Begin';
+      startBtn.textContent = 'Begin';
       startBtn.classList.remove('stop');
       stopDrone();
     }
@@ -393,7 +533,7 @@
       soundOn = !soundOn;
       soundBtn.classList.toggle('active', soundOn);
       if (running) {
-        if (soundOn) startDrone(FREQ_DATA[currentFreq].hz);
+        if (soundOn) startDrone(currentMode);
         else stopDrone();
       }
     });
@@ -403,15 +543,18 @@
       chimeBtn.classList.toggle('active', chimesOn);
     });
 
-    freqRow.querySelectorAll('.freq-btn').forEach(btn => {
+    modeRow.querySelectorAll('.mode-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        freqRow.querySelectorAll('.freq-btn').forEach(b => b.classList.remove('active'));
+        modeRow.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        currentFreq = parseInt(btn.dataset.freq);
-        intentionEl.textContent = FREQ_DATA[currentFreq].intention;
-        if (running) startDrone(FREQ_DATA[currentFreq].hz);
+        currentMode = btn.dataset.mode;
+        sublabelEl.textContent = MODES[currentMode].sublabel;
+        if (running) startDrone(currentMode);
       });
     });
+
+    // Set initial sublabel
+    sublabelEl.textContent = MODES[currentMode].sublabel;
   </script>
 
 </body>
